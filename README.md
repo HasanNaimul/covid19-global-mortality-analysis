@@ -1,6 +1,6 @@
 # 📊 Global COVID-19 Mortality Analysis
 
-**Portfolio-ready end-to-end data analysis project** focused on global COVID-19 mortality trends using time-series analysis, feature engineering, KPI design, clustering, and dashboard storytelling.
+** Data analysis project** focused on global COVID-19 mortality trends using time-series analysis, feature engineering, KPI design, clustering, and dashboard storytelling.
 
 > **GitHub repo description:** End-to-end data analysis project exploring global COVID-19 mortality trends using time-series analysis, feature engineering, and clustering techniques. Includes KPI development, rolling metrics, and interactive dashboard.
 
