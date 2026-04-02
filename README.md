@@ -5,12 +5,11 @@
 > **GitHub repo description:** End-to-end data analysis project exploring global COVID-19 mortality trends using time-series analysis, feature engineering, and clustering techniques. Includes KPI development, rolling metrics, and interactive dashboard.
 
 ## 🔍 Overview
-This project analyzes daily COVID-19 deaths per million across six countries — Canada, France, Germany, India, the United Kingdom, and the United States — to identify mortality patterns, compare severity, detect waves, and evaluate recovery after major peaks.
+This project analyses daily COVID-19 deaths per million across six countries — Canada, France, Germany, India, the United Kingdom, and the United States — to identify mortality patterns, compare severity, detect waves, and evaluate recovery after major peaks.
 
-The project is intentionally structured like a professional analytics case study so it can be used in a **GitHub portfolio, CV, LinkedIn profile, and job applications**.
 
 ## 🎯 Business-style objectives
-- Analyze mortality trends over time using smoothed time-series methods
+- Analyse mortality trends over time using smoothed time-series methods
 - Detect pandemic waves using rolling averages and peak logic
 - Compare countries using normalized KPIs rather than raw totals
 - Segment countries by mortality profile using clustering
@@ -58,7 +57,7 @@ covid19-global-mortality-analysis/
 ![Annual heatmap](visuals/annual_heatmap.png)
 
 ## 🧪 Methodology
-1. Cleaned and standardized the raw daily dataset
+1. Cleaned and standardised the raw daily dataset
 2. Engineered rolling averages, daily changes, cumulative burden, and time buckets
 3. Built country-level KPIs including peak severity, wave count, recovery speed, and volatility
 4. Applied clustering to group countries with similar mortality patterns
@@ -93,5 +92,4 @@ This project demonstrates that you can:
 - `reports/case_study.md`
 - `sql_analysis/queries.sql`
 
-## 🔗 LinkedIn-ready project summary
-> Built an end-to-end data analysis project in Python exploring COVID-19 mortality trends across six countries. Cleaned and transformed daily time-series data, engineered rolling KPIs, detected mortality waves, measured recovery speed, segmented countries using clustering, and delivered both static visuals and an interactive dashboard for stakeholder-ready insights.
+
