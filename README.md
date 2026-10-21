@@ -1,95 +1,71 @@
-# 📊 Global COVID-19 Mortality Analysis
+# COVID-19 mortality patterns across six countries
 
-** Data analysis project** focused on global COVID-19 mortality trends using time-series analysis, feature engineering, KPI design, clustering, and dashboard storytelling.
+A Python time-series analysis comparing reported daily COVID-19 deaths per million in Canada, France, Germany, India, the United Kingdom and the United States. It combines data preparation, rolling metrics, wave detection, country summaries and exploratory clustering with charts and an HTML dashboard.
 
-> **GitHub repo description:** End-to-end data analysis project exploring global COVID-19 mortality trends using time-series analysis, feature engineering, and clustering techniques. Includes KPI development, rolling metrics, and interactive dashboard.
+The analytical question is how reported mortality patterns differ across these six series. This is a historical comparison; it does not establish the causes of differences between countries.
 
-## 🔍 Overview
-This project analyses daily COVID-19 deaths per million across six countries — Canada, France, Germany, India, the United Kingdom, and the United States — to identify mortality patterns, compare severity, detect waves, and evaluate recovery after major peaks.
+![Rolling mortality trends](visuals/rolling_trends.png)
 
+## Explore the work
 
-## 🎯 Business-style objectives
-- Analyse mortality trends over time using smoothed time-series methods
-- Detect pandemic waves using rolling averages and peak logic
-- Compare countries using normalized KPIs rather than raw totals
-- Segment countries by mortality profile using clustering
-- Communicate results through stakeholder-ready visuals and an interactive dashboard
+- [Interactive HTML dashboard](dashboard/covid_dashboard.html): download and open locally in a browser
+- [Case study](reports/case_study.md) and [executive summary](reports/executive_summary.md)
+- [Notebook](notebooks/covid_mortality_analysis.ipynb)
+- [Preparation code](src/data_prep.py) and [summary calculations](src/analysis.py)
+- [SQL examples and field mapping](sql_analysis/README.md)
 
-## 🛠️ Tools and skills demonstrated
-- **Python:** pandas, NumPy, SciPy, scikit-learn, Plotly, Matplotlib
-- **Analytics:** data cleaning, feature engineering, KPI design, segmentation, time-series analysis
-- **Communication:** executive summary, data storytelling, dashboard development, recruiter-friendly documentation
-- **SQL:** example analytical queries for interview and portfolio use
+## Data and reproduced findings
 
-## 📂 Project structure
-```text
-covid19-global-mortality-analysis/
-├── data/
-│   ├── raw/
-│   └── processed/
-├── dashboard/
-├── linkedin/
-├── notebooks/
-├── reports/
-├── resume/
-├── sql_analysis/
-├── src/
-├── visuals/
-├── README.md
-└── requirements.txt
-```
+The included raw file contains **7,506 records** across **six countries**, with dates from **9 January 2020 to 12 June 2023** overall. The October 2026 check ran the preparation and summary functions on that file using temporary outputs, preserving the saved results.
 
-## 📈 Key insights
-- **Highest cumulative burden:** United Kingdom (3347.9 deaths per million) and United States (3318.7)
-- **Highest single-wave peak:** United Kingdom reached a 7-day rolling peak of 20.14 deaths per million
-- **Slowest recovery after the main peak:** France took 171 days to fall below 25% of peak mortality
-- **Strongest monthly shock:** United Kingdom in 2021-01 with 507.5 deaths per million
-- **Segmentation result:** countries separate into distinct burden/recovery profiles rather than one uniform pandemic pattern
+| Measure | Reproduced result |
+| --- | --- |
+| UK cumulative sum of daily deaths per million | 3,347.9 |
+| US cumulative sum of daily deaths per million | 3,318.7 |
+| France: days from main peak to first value at or below 25% of peak | 171 |
 
-## 📊 Visual preview
-### Rolling mortality trends
-![Rolling trends](visuals/rolling_trends.png)
+These values describe the supplied series and definitions. The source publisher, original extraction and reuse terms are not fully documented in this repository and require confirmation before external reuse. The review reproduced calculations, not the underlying mortality reporting.
 
-### Cumulative mortality burden
-![Cumulative burden](visuals/cumulative_burden.png)
+## Method
 
-### Annual mortality heatmap
-![Annual heatmap](visuals/annual_heatmap.png)
+1. Sort observations by country and date and derive date fields.
+2. Calculate a seven-observation rolling mean with `min_periods=1`, daily changes and cumulative summaries.
+3. Detect peaks with a minimum separation of 45 observations and prominence based on each country's maximum rolling value.
+4. Define recovery as the first post-peak value at or below 25% of that peak. This is an analytical threshold, not a medical definition.
+5. Standardise six summary features and apply three-cluster K-means with seed 42 and 20 initialisations.
 
-## 🧪 Methodology
-1. Cleaned and standardised the raw daily dataset
-2. Engineered rolling averages, daily changes, cumulative burden, and time buckets
-3. Built country-level KPIs including peak severity, wave count, recovery speed, and volatility
-4. Applied clustering to group countries with similar mortality patterns
-5. Produced static visuals, processed tables, and an interactive dashboard
-6. Added SQL examples and recruiter-facing assets for job applications
+The clustering has only six country-level observations and is exploratory. The row-based rolling window assumes daily observations; the validation tests check duplicate dates and daily spacing in the supplied source. Reporting practices, missing data, revisions and population denominators limit cross-country interpretation. No causal or policy-effectiveness claims are supported by this analysis alone.
 
-## 🚀 How to run
+## Setup and execution
+
+From the repository root, create and activate a Python virtual environment, then:
+
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python src/data_prep.py
 python src/analysis.py
+```
+
+Run from the repository root because these scripts use working-directory-relative default paths. The commands overwrite `data/processed/covid_deaths_enriched.csv` and `data/processed/country_summary.csv`; preserve copies when comparing results. They do not regenerate the HTML dashboard, every figure or the annual/monthly summary CSVs. The notebook contains additional analysis and was not rerun end to end in this review.
+
+For interactive exploration:
+
+```bash
 jupyter notebook notebooks/covid_mortality_analysis.ipynb
 ```
 
-Open the dashboard in a browser:
-```text
-dashboard/covid_dashboard.html
+No API keys are needed. Python 3.12 was used for the review. The requirements specify minimum versions rather than a locked environment.
+
+## Validation
+
+```bash
+python -m unittest discover -s tests -v
 ```
 
-## 💼 Why this project works for a data analyst job search
-This project demonstrates that you can:
-- structure an analysis repo professionally
-- turn a raw CSV into decision-useful KPIs
-- use time-series methods instead of only basic descriptive charts
-- write clearly for technical and non-technical audiences
-- present analysis in a format that recruiters can review quickly
+Tests check source schema, country/date uniqueness, daily spacing, finite numeric values, country-isolated rolling calculations, cumulative totals and the recovery-threshold definition. They write only temporary outputs. See [verification notes](VERIFICATION.md) for the measured run and its limits.
 
-## 📌 Recommended files to highlight on GitHub
-- `README.md`
-- `visuals/rolling_trends.png`
-- `dashboard/covid_dashboard.html`
-- `reports/case_study.md`
-- `sql_analysis/queries.sql`
+## Project contents
 
+`data/` contains raw and processed CSVs; `src/` contains pipeline scripts; `notebooks/`, `visuals/`, `dashboard/`, `reports/` and `sql_analysis/` retain the existing analysis assets. No licence, dataset or historical result was changed during this review.
 
+Future work includes confirming source attribution and terms, recording dependencies in a reproducible environment and adding a single documented build for every published asset.

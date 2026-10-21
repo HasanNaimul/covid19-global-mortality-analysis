@@ -1,11 +1,16 @@
-# SQL Layer
+# SQL examples
 
-This folder adds a SQL version of the project so it is easier to present in interviews and applications where SQL is expected.
+[queries.sql](queries.sql) contains analytical examples, not a connected database pipeline. Create a `covid_data` table from the enriched CSV using this mapping before adapting the queries:
 
-## Suggested workflow
-1. Load the processed dataset into PostgreSQL, MySQL, SQLite, BigQuery, or Snowflake.
-2. Rename fields if needed so they match the examples in `queries.sql`.
-3. Run the queries and include screenshots in your GitHub repo or LinkedIn post.
+| CSV field | SQL field |
+| --- | --- |
+| `Day` | `date` |
+| `Entity` | `country` |
+| `deaths_per_million` | `new_deaths_per_million` |
+| `rolling_7d` | `rolling_7d_avg` |
+| `year` | `year` |
+| `month` | `month` |
 
-## Why it matters
-Many analyst roles screen for SQL first. Including a SQL layer makes the project look more complete and more aligned with hiring expectations.
+Use a date type for `date`, numeric types for mortality measures, and text for the `YYYY-MM` month. No database creation, loading script or credentials are included.
+
+Query 4 uses `QUALIFY`, which is dialect-specific; adapt it to a subquery where unsupported. The October 2026 review did not execute these SQL examples against a database. Their field names differ from the Python output deliberately and require the explicit mapping above.
