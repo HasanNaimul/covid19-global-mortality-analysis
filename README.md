@@ -34,7 +34,7 @@ These values describe the supplied series and definitions. The source publisher,
 4. Define recovery as the first post-peak value at or below 25% of that peak. This is an analytical threshold, not a medical definition.
 5. Standardise six summary features and apply three-cluster K-means with seed 42 and 20 initialisations.
 
-The clustering has only six country-level observations and is exploratory. The row-based rolling window assumes daily observations; the validation tests check duplicate dates and daily spacing in the supplied source. Reporting practices, missing data, revisions and population denominators limit cross-country interpretation. No causal or policy-effectiveness claims are supported by this analysis alone.
+The clustering has only six country-level observations and is exploratory. Missing recovery intervals are median-imputed for clustering inputs only, with a missingness indicator; reported recovery fields remain missing. If all recovery observations are unavailable, the pipeline raises an explicit error. The row-based rolling window assumes daily observations; the validation tests check duplicate dates and daily spacing in the supplied source. Reporting practices, missing data, revisions and population denominators limit cross-country interpretation. No causal or policy-effectiveness claims are supported by this analysis alone.
 
 ## Setup and execution
 

@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.analysis import summarize_country
+from src.analysis import summarize_country, prepare_clustering_features
 from src.data_prep import build_dataset
 
 
@@ -62,6 +62,29 @@ class CalculationTests(unittest.TestCase):
                              "deaths_per_million": [4, 8, 3], "rolling_7d": [4, 8, 3]})
         self.assertTrue(pd.isna(summarize_country(data)["days_to_recover_from_main_peak"]))
 
+
+
+
+class ClusteringInputTests(unittest.TestCase):
+    def test_unobserved_recovery_is_imputed_only_for_clustering(self):
+        summary = pd.DataFrame({
+            "peak_7d_deaths_per_million": [2.0, 4.0, 6.0],
+            "cumulative_deaths_per_million": [10.0, 20.0, 30.0],
+            "volatility_std": [1.0, 2.0, 3.0],
+            "estimated_wave_count": [1, 2, 3],
+            "days_to_recover_from_main_peak": [10.0, np.nan, 20.0],
+            "zero_share": [0.1, 0.2, 0.3],
+        })
+        result = prepare_clustering_features(summary, summary.columns.tolist())
+        self.assertEqual(result["recovery_not_observed"].tolist(), [0, 1, 0])
+        self.assertEqual(result["days_to_recover_from_main_peak"].tolist(), [10.0, 15.0, 20.0])
+        self.assertTrue(pd.isna(summary.loc[1, "days_to_recover_from_main_peak"]))
+        self.assertTrue(np.isfinite(result.to_numpy()).all())
+
+    def test_all_missing_recovery_causes_clear_error(self):
+        summary = pd.DataFrame({"days_to_recover_from_main_peak": [np.nan, np.nan]})
+        with self.assertRaisesRegex(ValueError, "No observed clustering values"):
+            prepare_clustering_features(summary, summary.columns.tolist())
 
 if __name__ == "__main__":
     unittest.main()
