@@ -29,6 +29,16 @@ def summarize_country(g: pd.DataFrame) -> pd.Series:
         'zero_share': float((g['deaths_per_million'] == 0).mean())
     })
 
+def prepare_clustering_features(summary: pd.DataFrame, feature_cols: list[str]) -> pd.DataFrame:
+    """Impute missing clustering inputs, preserving missing values in the report."""
+    features = summary[feature_cols].copy().replace([np.inf, -np.inf], np.nan)
+    if features[feature_cols].isna().all().any():
+        missing = features[feature_cols].columns[features[feature_cols].isna().all()].tolist()
+        raise ValueError(f"No observed clustering values for {missing}")
+    features["recovery_not_observed"] = features["days_to_recover_from_main_peak"].isna().astype(int)
+    return features.fillna(features.median(numeric_only=True))
+
+
 def build_summary(input_path: Path = INPUT_PATH, output_path: Path = SUMMARY_PATH) -> pd.DataFrame:
     df = pd.read_csv(input_path, parse_dates=['Day'])
     summary = df.groupby('Entity', group_keys=False).apply(summarize_country).reset_index()
@@ -40,7 +50,7 @@ def build_summary(input_path: Path = INPUT_PATH, output_path: Path = SUMMARY_PAT
         'days_to_recover_from_main_peak',
         'zero_share'
     ]
-    X = StandardScaler().fit_transform(summary[feature_cols])
+    X = StandardScaler().fit_transform(prepare_clustering_features(summary, feature_cols))
     km = KMeans(n_clusters=3, n_init=20, random_state=42)
     summary['cluster'] = km.fit_predict(X)
     output_path.parent.mkdir(parents=True, exist_ok=True)
